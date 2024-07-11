@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda de Ropa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav button {
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        main {
+            padding: 2rem;
+        }
+        .producto {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+        }
+        .producto img {
+            max-width: 100%;
+            height: auto;
+        }
+        #modal-detalle {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #agregar-producto {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        #agregar-producto input, #agregar-producto select, #agregar-producto button {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mi Tienda de Ropa</h1>
+        <nav>
+            <button onclick="cambiarSeccion('inicio')">Inicio</button>
+            <button onclick="cambiarSeccion('ofertas')">Ofertas</button>
+            <button onclick="cambiarSeccion('dama')">Ropa para Dama</button>
+            <button onclick="cambiarSeccion('caballero')">Ropa para Caballero</button>
+            <button onclick="cambiarSeccion('ninos')">Ropa para Niños</button>
+            <button onclick="cambiarSeccion('zapatos')">Zapatos</button>
+        </nav>
+    </header>
+
+    <main id="contenido-principal">
+        <!-- El contenido de cada sección se cargará aquí dinámicamente -->
+    </main>
+
+    <section id="agregar-producto">
+        <h2>Agregar Nuevo Producto</h2>
+        <input type="text" id="nombre-producto" placeholder="Nombre del producto">
+        <textarea id="descripcion-producto" placeholder="Descripción del producto"></textarea>
+        <input type="number" id="precio-producto" placeholder="Precio">
+        <select id="categoria-producto">
+            <option value="ofertas">Ofertas</option>
+            <option value="dama">Ropa para Dama</option>
+            <option value="caballero">Ropa para Caballero</option>
+            <option value="ninos">Ropa para Niños</option>
+            <option value="zapatos">Zapatos</option>
+        </select>
+        <input type="file" id="imagen-producto" accept="image/*">
+        <button onclick="agregarProducto()">Agregar Producto</button>
+    </section>
+
+    <div id="modal-detalle" style="display: none;">
+        <h2 id="modal-titulo"></h2>
+        <img id="modal-imagen" src="" alt="Producto">
+        <p id="modal-descripcion"></p>
+        <p id="modal-precio"></p>
+        <button onclick="reservar()">Reservar</button>
+        <button onclick="comprar()">Comprar</button>
+        <button onclick="cerrarModal()">Cerrar</button>
+    </div>
+
+    <script>
+        let productos = JSON.parse(localStorage.getItem('productos')) || {};
+
+        function cambiarSeccion(seccion) {
+            const contenido = document.getElementById('contenido-principal');
+            contenido.innerHTML = '';
+            if (productos[seccion]) {
+                productos[seccion].forEach(producto => {
+                    const div = document.createElement('div');
+                    div.className = 'producto';
+                    div.innerHTML = `
+                        <img src="${producto.imagen}" alt="${producto.nombre}">
+                        <h3>${producto.nombre}</h3>
+                        <p>Precio: $${producto.precio}</p>
+                        <button onclick="verDetalle('${seccion}', '${producto.nombre}')">Ver Detalles</button>
+                    `;
+                    contenido.appendChild(div);
+                });
+            } else {
+                contenido.innerHTML = '<p>No hay productos en esta sección.</p>';
+            }
+        }
+
+        function agregarProducto() {
+            const nombre = document.getElementById('nombre-producto').value;
+            const descripcion = document.getElementById('descripcion-producto').value;
+            const precio = document.getElementById('precio-producto').value;
+            const categoria = document.getElementById('categoria-producto').value;
+            const imagenInput = document.getElementById('imagen-producto');
+            
+            if (!nombre || !descripcion || !precio || !categoria || !imagenInput.files[0]) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const producto = {
+                    nombre,
+                    descripcion,
+                    precio,
+                    imagen: e.target.result
+                };
+
+                if (!productos[categoria]) {
+                    productos[categoria] = [];
+                }
+                productos[categoria].push(producto);
+
+                localStorage.setItem('productos', JSON.stringify(productos));
+                alert('Producto agregado con éxito');
+                cambiarSeccion(categoria);
+            };
+            reader.readAsDataURL(imagenInput.files[0]);
+        }
+
+        function verDetalle(seccion, nombreProducto) {
+            const producto = productos[seccion].find(p => p.nombre === nombreProducto);
+            document.getElementById('modal-titulo').textContent = producto.nombre;
+            document.getElementById('modal-imagen').src = producto.imagen;
+            document.getElementById('modal-descripcion').textContent = producto.descripcion;
+            document.getElementById('modal-precio').textContent = `Precio: $${producto.precio}`;
+            document.getElementById('modal-detalle').style.display = 'block';
+        }
+
+        function reservar() {
+            alert('Producto reservado');
+            cerrarModal();
+        }
+
+        function comprar() {
+            alert('Producto comprado');
+            cerrarModal();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-detalle').style.display = 'none';
+        }
+
+        // Inicializar la página mostrando la sección de inicio
+        cambiarSeccion('inicio');
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+
+<div id="login-form">
+    <h2>Iniciar sesión</h2>
+    <input type="text" id="username" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="login()">Iniciar sesión</button>
+</div>
+
+    <header>
+        <h1>Panel de Administrador</h1>
+        <nav>
+            <button onclick="mostrarSeccion('productos')">Gestionar Productos</button>
+            <button onclick="mostrarSeccion('pedidos')">Revisar Pedidos</button>
+            <button onclick="mostrarSeccion('mensajes')">Revisar Mensajes</button>
+        </nav>
+    </header>
+
+    <main id="contenido-admin"></main>
+
+    <div id="formulario-producto" style="display: none;">
+        <!-- Formulario para agregar/editar productos -->
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

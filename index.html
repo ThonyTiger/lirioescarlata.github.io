@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Ropa</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Tienda de Ropa</h1>
+        <nav>
+            <button onclick="cambiarSeccion('inicio')">Inicio</button>
+            <button onclick="cambiarSeccion('ofertas')">Ofertas</button>
+            <button onclick="cambiarSeccion('dama')">Ropa para Dama</button>
+            <button onclick="cambiarSeccion('caballero')">Ropa para Caballero</button>
+            <button onclick="cambiarSeccion('ninos')">Ropa para Niños</button>
+            <button onclick="cambiarSeccion('zapatos')">Zapatos</button>
+        </nav>
+    </header>
+
+    <main id="contenido-principal"></main>
+
+    <div id="modal-detalle" style="display: none;">
+        <!-- Contenido del modal -->
+    </div>
+
+    <div id="formulario-mensaje">
+        <h3>Enviar Mensaje</h3>
+        <textarea id="mensaje-cliente" placeholder="Escribe tu mensaje aquí"></textarea>
+        <button onclick="enviarMensaje()">Enviar</button>
+    </div>
+
+    <script src="js/client.js"></script>
+</body>
+</html>
